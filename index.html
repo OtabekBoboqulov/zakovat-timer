@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakovat Timer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3d 50%, #0f0f2e 100%);
+            color: #e0e0e0;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Night Sky Stars */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(2.2px 2.2px at 20px 30px, #eee, transparent 50%),
+                radial-gradient(2.2px 2.2px at 40px 70px, #fff, transparent 50%),
+                radial-gradient(1.1px 1.1px at 90px 40px, #fff, transparent 50%),
+                radial-gradient(1.1px 1.1px at 130px 80px, #eee, transparent 50%),
+                radial-gradient(2.2px 2.2px at 160px 30px, #fff, transparent 50%);
+            background-repeat: repeat;
+            background-size: 220px 110px;
+            animation: twinkle 8s infinite alternate;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 550px; /* 10% larger */
+            padding: 33px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.52em; /* +10% */
+            margin-bottom: 44px;
+            background: linear-gradient(90deg, #4fc3f7, #29b6f6, #0288d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 22px rgba(79, 195, 247, 0.3);
+            letter-spacing: 2.2px;
+        }
+
+        .button {
+            padding: 17.6px 35.2px; /* +10% */
+            margin: 13.2px;
+            border: none;
+            border-radius: 55px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.43em; /* +10% */
+            transition: all 0.3s ease;
+            box-shadow: 0 4.4px 16.5px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ff1744, #d50000);
+            color: white;
+            font-size: 1.98em; /* +10% */
+            padding: 24.2px 55px;
+            display: block;
+            margin: 0 auto 27.5px;
+            box-shadow: 0 0 27.5px rgba(255, 23, 68, 0.5);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3.3px);
+            box-shadow: 0 0 38.5px rgba(255, 23, 68, 0.7);
+        }
+
+        .secondary-btn, .play-btn {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+            font-size: 1.21em; /* +10% */
+            padding: 13.2px 30.8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8.8px;
+        }
+
+        .secondary-btn:hover, .play-btn:hover {
+            transform: translateY(-2.2px);
+            box-shadow: 0 0 27.5px rgba(33, 150, 243, 0.6);
+        }
+
+        /* Fixed: Only show Play icon + text once */
+        .play-btn::after {
+            content: 'Play';
+            font-size: 1.32em;
+        }
+
+        .timer-container {
+            position: relative;
+            display: inline-block;
+            margin: 22px;
+        }
+
+        .timer-circle {
+            width: 198px;   /* +10% */
+            height: 198px;
+            position: relative;
+        }
+
+        .timer-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .timer-circle .bg-circle {
+            fill: none;
+            stroke: #2a2a4e;
+            stroke-width: 13.2;
+        }
+
+        .timer-circle .progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 13.2;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .timer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.52em; /* +10% */
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 16.5px rgba(255,255,255,0.3);
+        }
+
+        .small-timer-container .timer-circle {
+            width: 110px;   /* +10% */
+            height: 110px;
+        }
+
+        .small-timer-container .timer {
+            font-size: 1.98em; /* +10% */
+        }
+
+        .timers-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            margin: 33px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.6s forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: scale(0.8); }
+        }
+
+        .gradient-defs {
+            position: absolute;
+            width: 0; height: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-defs">
+        <svg>
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00e5ff" />
+                    <stop offset="100%" stop-color="#00b0ff" />
+                </linearGradient>
+                <linearGradient id="gradient-small" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ff9800" />
+                    <stop offset="100%" stop-color="#f57c00" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <div class="container">
+        <h1>Zakovat Timer</h1>
+        
+        <!-- Main Menu -->
+        <div id="main-menu">
+            <button class="button start-btn" onclick="startMode()">Start</button>
+            <button class="button secondary-btn" onclick="dubletMode()">Dublet</button>
+            <button class="button secondary-btn" onclick="blitsMode()">Blits</button>
+        </div>
+        
+        <!-- Start Mode -->
+        <div id="start-mode" class="hidden">
+            <div class="timer-container">
+                <div class="timer-circle" id="main-circle">
+                    <svg>
+                        <circle class="bg-circle" cx="99" cy="99" r="88"></circle>
+                        <circle class="progress" cx="99" cy="99" r="88" stroke-dasharray="552.64" stroke-dashoffset="552.64"></circle>
+                    </svg>
+                    <div id="main-timer" class="timer">60</div>
+                </div>
+            </div>
+            <div class="timer-container small-timer-container hidden" id="small-timer-container">
+                <div class="timer-circle" id="small-circle">
+                    <svg>
+                        <circle class="bg-circle" cx="55" cy="55" r="44"></circle>
+                        <circle class="progress" cx="55" cy="55" r="44" stroke="url(#gradient-small)" stroke-dasharray="276.32" stroke-dashoffset="276.32"></circle>
+                    </svg>
+                    <div id="small-timer" class="timer">10</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dublet Mode -->
+        <div id="dublet-mode" class="hidden">
+            <div class="timers-row">
+                <div class="timer-container" id="dublet-timer1-container">
+                    <div class="timer-circle" id="dublet-circle1">
+                        <svg>
+                            <circle class="bg-circle" cx="99" cy="99" r="88"></circle>
+                            <circle class="progress" cx="99" cy="99" r="88" stroke-dasharray="552.64" stroke-dashoffset="552.64"></circle>
+                        </svg>
+                        <div id="dublet-timer1" class="timer">30</div>
+                    </div>
+                </div>
+                <div class="timer-container hidden" id="dublet-timer2-container">
+                    <div class="timer-circle" id="dublet-circle2">
+                        <svg>
+                            <circle class="bg-circle" cx="99" cy="99" r="88"></circle>
+                            <circle class="progress" cx="99" cy="99" r="88" stroke-dasharray="552.64" stroke-dashoffset="552.64"></circle>
+                        </svg>
+                        <div id="dublet-timer2" class="timer">30</div>
+                    </div>
+                </div>
+            </div>
+            <div class="timer-container small-timer-container hidden" id="dublet-small-container">
+                <div class="timer-circle" id="dublet-small-circle">
+                    <svg>
+                        <circle class="bg-circle" cx="55" cy="55" r="44"></circle>
+                        <circle class="progress" cx="55" cy="55" r="44" stroke="url(#gradient-small)" stroke-dasharray="276.32" stroke-dashoffset="276.32"></circle>
+                    </svg>
+                    <div id="dublet-small-timer" class="timer">10</div>
+                </div>
+            </div>
+            <button class="button play-btn hidden" id="dublet-play" onclick="continueDublet()">▶</button>
+        </div>
+        
+        <!-- Blits Mode -->
+        <div id="blits-mode" class="hidden">
+            <div class="timers-row">
+                <div class="timer-container" id="blits-timer1-container">
+                    <div class="timer-circle" id="blits-circle1">
+                        <svg>
+                            <circle class="bg-circle" cx="99" cy="99" r="88"></circle>
+                            <circle class="progress" cx="99" cy="99" r="88" stroke-dasharray="552.64" stroke-dashoffset="552.64"></circle>
+                        </svg>
+                        <div id="blits-timer1" class="timer">20</div>
+                    </div>
+                </div>
+                <div class="timer-container hidden" id="blits-timer2-container">
+                    <div class="timer-circle" id="blits-circle2">
+                        <svg>
+                            <circle class="bg-circle" cx="99" cy="99" r="88"></circle>
+                            <circle class="progress" cx="99" cy="99" r="88" stroke-dasharray="552.64" stroke-dashoffset="552.64"></circle>
+                        </svg>
+                        <div id="blits-timer2" class="timer">20</div>
+                    </div>
+                </div>
+                <div class="timer-container hidden" id="blits-timer3-container">
+                    <div class="timer-circle" id="blits-circle3">
+                        <svg>
+                            <circle class="bg-circle" cx="99" cy="99" r="88"></circle>
+                            <circle class="progress" cx="99" cy="99" r="88" stroke-dasharray="552.64" stroke-dashoffset="552.64"></circle>
+                        </svg>
+                        <div id="blits-timer3" class="timer">20</div>
+                    </div>
+                </div>
+            </div>
+            <div class="timer-container small-timer-container hidden" id="blits-small-container">
+                <div class="timer-circle" id="blits-small-circle">
+                    <svg>
+                        <circle class="bg-circle" cx="55" cy="55" r="44"></circle>
+                        <circle class="progress" cx="55" cy="55" r="44" stroke="url(#gradient-small)" stroke-dasharray="276.32" stroke-dashoffset="276.32"></circle>
+                    </svg>
+                    <div id="blits-small-timer" class="timer">10</div>
+                </div>
+            </div>
+            <button class="button play-btn hidden" id="blits-play1" onclick="continueBlits(1)">▶</button>
+            <button class="button play-btn hidden" id="blits-play2" onclick="continueBlits(2)">▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentInterval, tickInterval;
+        let audioContext, tickOscillator, tickGain;
+        let isTicking = false;
+
+        function initAudio() {
+            if (audioContext) return;
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        // Clean, pleasant tick
+        function startTicking() {
+            if (isTicking) return;
+            initAudio();
+            tickOscillator = audioContext.createOscillator();
+            tickGain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+
+            tickOscillator.connect(filter);
+            filter.connect(tickGain);
+            tickGain.connect(audioContext.destination);
+
+            tickOscillator.frequency.value = 880;
+            tickOscillator.type = 'sine';
+            filter.type = 'bandpass';
+            filter.frequency.value = 880;
+            filter.Q.value = 12;
+
+            tickGain.gain.value = 0;
+            tickOscillator.start();
+
+            tickInterval = setInterval(() => {
+                tickGain.gain.setValueAtTime(0.18, audioContext.currentTime);
+                tickGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+            }, 1000);
+
+            isTicking = true;
+        }
+
+        function stopTicking() {
+            if (tickInterval) clearInterval(tickInterval);
+            if (tickOscillator) tickOscillator.stop();
+            isTicking = false;
+        }
+
+        // LOUD & DRAMATIC BELL CHIME
+        function playDramaticBell() {
+            initAudio();
+            const notes = [
+                { freq: 523, vol: 0.5, delay: 0 },
+                { freq: 659, vol: 0.55, delay: 0.1 },
+                { freq: 784, vol: 0.6, delay: 0.2 },
+                { freq: 1047, vol: 0.7, delay: 0.35 }
+            ];
+
+            notes.forEach(note => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = note.freq;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0, audioContext.currentTime + note.delay);
+                gain.gain.linearRampToValueAtTime(note.vol, audioContext.currentTime + note.delay + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.delay + 1.2);
+                osc.start(audioContext.currentTime + note.delay);
+                osc.stop(audioContext.currentTime + note.delay + 1.2);
+            });
+        }
+
+        // Update circle progress
+        function updateProgress(circleId, progress) {
+            const circle = document.querySelector(`#${circleId} .progress`);
+            const circumference = circleId.includes('small') ? 276.32 : 552.64;
+            const offset = circumference - (progress * circumference);
+            circle.style.strokeDashoffset = offset;
+        }
+
+        // Countdown
+        function startCountdown(timerId, circleId, duration, callback, isSmall = false) {
+            let timeLeft = duration;
+            const timerEl = document.getElementById(timerId);
+            timerEl.textContent = timeLeft;
+            updateProgress(circleId, 1);
+
+            startTicking();
+
+            currentInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                updateProgress(circleId, timeLeft / duration);
+
+                if (timeLeft <= 0) {
+                    clearInterval(currentInterval);
+                    stopTicking();
+                    playDramaticBell();
+                    if (callback) callback();
+                }
+            }, 1000);
+        }
+
+        function resetPage() {
+            stopTicking();
+            clearInterval(currentInterval);
+            document.getElementById('main-menu').classList.remove('hidden');
+            document.getElementById('start-mode').classList.add('hidden');
+            document.getElementById('dublet-mode').classList.add('hidden');
+            document.getElementById('blits-mode').classList.add('hidden');
+
+            ['main', 'dublet-timer1', 'dublet-timer2', 'blits-timer1', 'blits-timer2', 'blits-timer3'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = id.includes('dublet') ? '30' : id.includes('blits') ? '20' : '60';
+            });
+            document.querySelectorAll('.progress').forEach(p => p.style.strokeDashoffset = p.parentNode.parentNode.id.includes('small') ? '276.32' : '552.64');
+            document.querySelectorAll('.small-timer-container, .timer-container').forEach(c => c.classList.remove('hidden'));
+            document.querySelectorAll('.play-btn').forEach(b => b.classList.add('hidden'));
+            document.querySelectorAll('.fade-out').forEach(el => el.classList.remove('fade-out'));
+        }
+
+        // Modes
+        function startMode() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('start-mode').classList.remove('hidden');
+            document.getElementById('small-timer-container').classList.add('hidden');
+
+            startCountdown('main-timer', 'main-circle', 60, () => {
+                document.getElementById('small-timer-container').classList.remove('hidden');
+                startCountdown('small-timer', 'small-circle', 10, () => {
+                    setTimeout(resetPage, 1200);
+                }, true);
+            });
+        }
+
+        function continueDublet() {
+            document.getElementById('dublet-play').classList.add('hidden');
+            const prev = document.getElementById('dublet-timer1-container');
+            prev.classList.add('fade-out');
+            setTimeout(() => prev.classList.add('hidden'), 600);
+
+            document.getElementById('dublet-timer2-container').classList.remove('hidden');
+            startCountdown('dublet-timer2', 'dublet-circle2', 30, () => {
+                document.getElementById('dublet-small-container').classList.remove('hidden');
+                startCountdown('dublet-small-timer', 'dublet-small-circle', 10, () => {
+                    setTimeout(resetPage, 1200);
+                }, true);
+            });
+        }
+
+        function dubletMode() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('dublet-mode').classList.remove('hidden');
+            document.getElementById('dublet-timer2-container').classList.add('hidden');
+            document.getElementById('dublet-small-container').classList.add('hidden');
+            document.getElementById('dublet-play').classList.add('hidden');
+
+            startCountdown('dublet-timer1', 'dublet-circle1', 30, () => {
+                document.getElementById('dublet-play').classList.remove('hidden');
+            });
+        }
+
+        let blitsStep = 0;
+        function continueBlits(step) {
+            document.getElementById(`blits-play${step}`).classList.add('hidden');
+            const prevId = step === 1 ? 'blits-timer1-container' : 'blits-timer2-container';
+            document.getElementById(prevId).classList.add('fade-out');
+            setTimeout(() => document.getElementById(prevId).classList.add('hidden'), 600);
+
+            const nextTimer = step === 1 ? 2 : 3;
+            document.getElementById(`blits-timer${nextTimer}-container`).classList.remove('hidden');
+
+            if (step === 2) {
+                startCountdown('blits-timer3', 'blits-circle3', 20, () => {
+                    document.getElementById('blits-small-container').classList.remove('hidden');
+                    startCountdown('blits-small-timer', 'blits-small-circle', 10, () => {
+                        setTimeout(() => {
+                            resetPage();
+                            blitsStep = 0;
+                        }, 1200);
+                    }, true);
+                });
+            } else {
+                startCountdown('blits-timer2', 'blits-circle2', 20, () => {
+                    document.getElementById('blits-play2').classList.remove('hidden');
+                });
+            }
+        }
+
+        function blitsMode() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('blits-mode').classList.remove('hidden');
+            ['2','3'].forEach(n => {
+                document.getElementById(`blits-timer${n}-container`).classList.add('hidden');
+            });
+            document.getElementById('blits-small-container').classList.add('hidden');
+            document.getElementById('blits-play1').classList.add('hidden');
+            document.getElementById('blits-play2').classList.add('hidden');
+
+            startCountdown('blits-timer1', 'blits-circle1', 20, () => {
+                document.getElementById('blits-play1').classList.remove('hidden');
+            });
+        }
+
+        // Enable audio on first click
+        document.addEventListener('click', () => {
+            initAudio();
+            document.removeEventListener('click', arguments.callee);
+        }, { once: true });
+    </script>
+</body>
+</html>
