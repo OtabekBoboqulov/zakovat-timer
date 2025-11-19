@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zakovat Timer</title>
+    <link rel="icon" href="logo.jpg" type="image/jpg">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
 
@@ -193,6 +194,31 @@
             position: absolute;
             width: 0; height: 0;
         }
+
+        .reference {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.9em;
+            color: #aaa;
+            z-index: 1;
+        }
+
+        .reference a {
+            color: #ff9800;
+            text-decoration: none;
+        }
+
+        .reference a:hover {
+            text-decoration: underline;
+        }
+
+        .reference a:active {
+            color: #f57c00;
+        }
+
+        .reference::before {
+            content: '© ';
+        }
     </style>
 </head>
 <body>
@@ -320,6 +346,9 @@
             <button class="button play-btn hidden" id="blits-play1" onclick="continueBlits(1)">▶</button>
             <button class="button play-btn hidden" id="blits-play2" onclick="continueBlits(2)">▶</button>
         </div>
+    </div>
+    <div class="reference">
+        Created by <a href="https://otabekboboqulov.uz/" target="_blank">Otabek Boboqulov</a>
     </div>
 
     <script>
