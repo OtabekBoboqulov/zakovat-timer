@@ -65,7 +65,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 22px rgba(79, 195, 247, 0.3);
             letter-spacing: 2.2px;
-            transition: opacity 0.5s ease;
+            transition: all 0.5s ease;
         }
 
         .button {
@@ -106,6 +106,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8.8px;
+            transition: all 0.5s ease;
         }
 
         .secondary-btn:hover, .play-btn:hover {
@@ -204,7 +205,7 @@
             font-size: 0.9em;
             color: #aaa;
             z-index: 1;
-            transition: opacity 0.5s ease;
+            transition: all 0.5s ease;
         }
 
         .reference a {
@@ -227,14 +228,62 @@
         /* Immersive Mode */
         body.timer-running h1,
         body.timer-running .reference,
-        body.timer-running .play-btn,
         body.timer-running #main-menu {
-            opacity: 0 !important;
+            opacity: 0;
+            max-height: 0;
+            margin: 0;
+            padding: 0;
             pointer-events: none;
+            overflow: hidden;
         }
 
         body.paused .timer-circle {
             opacity: 0.5;
+        }
+
+        .timer-circle::after {
+            content: '⏸';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        body.paused .timer-circle::after {
+            content: '▶';
+        }
+
+        body.timer-running .timer-circle:hover::after {
+            opacity: 1;
+        }
+
+        body.timer-running .timer-circle:hover .timer {
+            opacity: 0.2;
+        }
+
+        #suspend-btn {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: linear-gradient(135deg, #ff5252, #ff1744);
+            box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        body.timer-running #suspend-btn {
+            display: inline-flex !important;
+        }
+
+        #suspend-btn:hover {
+            box-shadow: 0 0 30px rgba(255, 23, 68, 0.6);
         }
     </style>
 </head>
@@ -254,11 +303,13 @@
         </svg>
     </div>
 
+    <button id="suspend-btn" class="button secondary-btn hidden" onclick="resetPage()">Suspend</button>
+
     <div class="container">
         <h1>Zakovat Timer</h1>
         
         <!-- Main Menu -->
-        <div id="main-menu">
+        <div id="main-menu" style="transition: all 0.5s ease;">
             <button class="button start-btn" onclick="startMode()">Start</button>
             <button class="button secondary-btn" onclick="dubletMode()">Dublet</button>
             <button class="button secondary-btn" onclick="blitsMode()">Blits</button>
@@ -484,7 +535,6 @@
                     currentInterval = null;
                     stopTicking();
                     playDramaticBell();
-                    document.body.classList.remove('timer-running');
                     if (callback) callback();
                 }
             }, 1000);
@@ -494,6 +544,7 @@
             isPaused = false;
             document.body.classList.remove('timer-running');
             document.body.classList.remove('paused');
+            document.getElementById('suspend-btn').classList.add('hidden');
             stopTicking();
             clearInterval(currentInterval);
             currentInterval = null;
@@ -595,10 +646,11 @@
             });
         }
 
-        // Enable audio on first click
+        // Enable audio on first click and handle timer toggle
         document.addEventListener('click', (e) => {
             initAudio();
-            if (e.target.closest('.timer-circle')) {
+            const circle = e.target.closest('.timer-circle');
+            if (circle) {
                 toggleTimer();
             }
         });
