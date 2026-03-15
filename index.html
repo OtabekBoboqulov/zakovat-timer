@@ -65,6 +65,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 22px rgba(79, 195, 247, 0.3);
             letter-spacing: 2.2px;
+            transition: opacity 0.5s ease;
         }
 
         .button {
@@ -128,6 +129,8 @@
             width: 198px;   /* +10% */
             height: 198px;
             position: relative;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
         }
 
         .timer-circle svg {
@@ -201,6 +204,7 @@
             font-size: 0.9em;
             color: #aaa;
             z-index: 1;
+            transition: opacity 0.5s ease;
         }
 
         .reference a {
@@ -218,6 +222,19 @@
 
         .reference::before {
             content: '© ';
+        }
+
+        /* Immersive Mode */
+        body.timer-running h1,
+        body.timer-running .reference,
+        body.timer-running .play-btn,
+        body.timer-running #main-menu {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        body.paused .timer-circle {
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -355,6 +372,7 @@
         let currentInterval, tickInterval;
         let audioContext, tickOscillator, tickGain;
         let isTicking = false;
+        let isPaused = false;
 
         function initAudio() {
             if (audioContext) return;
@@ -429,8 +447,24 @@
             circle.style.strokeDashoffset = offset;
         }
 
+        function toggleTimer() {
+            if (currentInterval) {
+                isPaused = !isPaused;
+                document.body.classList.toggle('paused', isPaused);
+                if (isPaused) {
+                    stopTicking();
+                } else {
+                    startTicking();
+                }
+            }
+        }
+
         // Countdown
         function startCountdown(timerId, circleId, duration, callback, isSmall = false) {
+            isPaused = false;
+            document.body.classList.add('timer-running');
+            document.body.classList.remove('paused');
+
             let timeLeft = duration;
             const timerEl = document.getElementById(timerId);
             timerEl.textContent = timeLeft;
@@ -439,22 +473,30 @@
             startTicking();
 
             currentInterval = setInterval(() => {
+                if (isPaused) return;
+
                 timeLeft--;
                 timerEl.textContent = timeLeft;
                 updateProgress(circleId, timeLeft / duration);
 
                 if (timeLeft <= 0) {
                     clearInterval(currentInterval);
+                    currentInterval = null;
                     stopTicking();
                     playDramaticBell();
+                    document.body.classList.remove('timer-running');
                     if (callback) callback();
                 }
             }, 1000);
         }
 
         function resetPage() {
+            isPaused = false;
+            document.body.classList.remove('timer-running');
+            document.body.classList.remove('paused');
             stopTicking();
             clearInterval(currentInterval);
+            currentInterval = null;
             document.getElementById('main-menu').classList.remove('hidden');
             document.getElementById('start-mode').classList.add('hidden');
             document.getElementById('dublet-mode').classList.add('hidden');
@@ -554,10 +596,12 @@
         }
 
         // Enable audio on first click
-        document.addEventListener('click', () => {
+        document.addEventListener('click', (e) => {
             initAudio();
-            document.removeEventListener('click', arguments.callee);
-        }, { once: true });
+            if (e.target.closest('.timer-circle')) {
+                toggleTimer();
+            }
+        });
     </script>
 </body>
 </html>
