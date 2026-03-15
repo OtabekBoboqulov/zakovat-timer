@@ -24,6 +24,12 @@
             min-height: 100vh;
             overflow: hidden;
             position: relative;
+            animation: fadeInBody 1.5s ease;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Night Sky Stars */
@@ -36,88 +42,148 @@
                 radial-gradient(2.2px 2.2px at 40px 70px, #fff, transparent 50%),
                 radial-gradient(1.1px 1.1px at 90px 40px, #fff, transparent 50%),
                 radial-gradient(1.1px 1.1px at 130px 80px, #eee, transparent 50%),
-                radial-gradient(2.2px 2.2px at 160px 30px, #fff, transparent 50%);
+                radial-gradient(2.2px 2.2px at 160px 30px, #fff, transparent 50%),
+                radial-gradient(2.2px 2.2px at 200px 100px, #ddf, transparent 50%),
+                radial-gradient(1.5px 1.5px at 100px 150px, #fff, transparent 50%);
             background-repeat: repeat;
-            background-size: 220px 110px;
-            animation: twinkle 8s infinite alternate;
-            opacity: 0.6;
+            background-size: 300px 200px;
+            animation: twinkle 10s infinite linear;
+            opacity: 0.5;
             z-index: 0;
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
+            0% { transform: translateY(0); opacity: 0.4; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(-20px); opacity: 0.4; }
         }
 
         .container {
             position: relative;
             z-index: 1;
-            max-width: 550px; /* 10% larger */
-            padding: 33px;
+            max-width: 800px;
+            padding: 40px;
             text-align: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         h1 {
-            font-size: 3.52em; /* +10% */
-            margin-bottom: 44px;
-            background: linear-gradient(90deg, #4fc3f7, #29b6f6, #0288d1);
+            font-size: 4.5em;
+            margin-bottom: 60px;
+            background: linear-gradient(90deg, #4fc3f7, #fff, #4fc3f7, #29b6f6, #4fc3f7);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 22px rgba(79, 195, 247, 0.3);
-            letter-spacing: 2.2px;
-            transition: all 0.5s ease;
+            text-shadow: 0 0 30px rgba(79, 195, 247, 0.5);
+            letter-spacing: 6px;
+            transition: all 0.8s ease;
+            animation: shine 5s linear infinite;
+            font-weight: 700;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
         }
 
         .button {
-            padding: 17.6px 35.2px; /* +10% */
-            margin: 13.2px;
+            padding: 18px 36px;
+            margin: 15px;
             border: none;
-            border-radius: 55px;
+            border-radius: 50px;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: 1.43em; /* +10% */
-            transition: all 0.3s ease;
-            box-shadow: 0 4.4px 16.5px rgba(0,0,0,0.3);
+            font-size: 1.4em;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
         }
 
         .start-btn {
             background: linear-gradient(135deg, #ff1744, #d50000);
             color: white;
-            font-size: 1.98em; /* +10% */
-            padding: 24.2px 55px;
+            font-size: 2em;
+            padding: 25px 60px;
             display: block;
-            margin: 0 auto 27.5px;
-            box-shadow: 0 0 27.5px rgba(255, 23, 68, 0.5);
+            margin: 0 auto 30px;
+            box-shadow: 0 0 30px rgba(255, 23, 68, 0.4);
+            border: none;
         }
 
         .start-btn:hover {
-            transform: translateY(-3.3px);
-            box-shadow: 0 0 38.5px rgba(255, 23, 68, 0.7);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 23, 68, 0.6);
         }
 
-        .secondary-btn, .play-btn {
+        .button:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .secondary-btn {
             background: linear-gradient(135deg, #2196f3, #1976d2);
             color: white;
-            font-size: 1.21em; /* +10% */
-            padding: 13.2px 30.8px;
+            font-size: 1.2em;
+            padding: 15px 35px;
             display: inline-flex;
             align-items: center;
-            gap: 8.8px;
-            transition: all 0.5s ease;
+            gap: 10px;
+            border: none;
         }
 
-        .secondary-btn:hover, .play-btn:hover {
-            transform: translateY(-2.2px);
-            box-shadow: 0 0 27.5px rgba(33, 150, 243, 0.6);
+        .secondary-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.5);
         }
 
-        /* Fixed: Only show Play icon + text once */
-        .play-btn::after {
-            content: 'Play';
-            font-size: 1.32em;
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+            font-size: 2.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.6);
+            animation: pulse-play 2s infinite;
+            transition: all 0.3s ease;
+            padding-left: 8px; /* Optical center for triangle */
+        }
+
+        .play-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 30px rgba(33, 150, 243, 0.8);
+        }
+
+        @keyframes pulse-play {
+            0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7); }
+            70% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 20px rgba(33, 150, 243, 0); }
+            100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
         }
 
         .timer-container {
@@ -131,13 +197,20 @@
             height: 198px;
             position: relative;
             cursor: pointer;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.1);
+        }
+
+        .timer-circle:hover {
+            box-shadow: 0 0 30px rgba(79, 195, 247, 0.2);
         }
 
         .timer-circle svg {
             width: 100%;
             height: 100%;
             transform: rotate(-90deg);
+            filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.3));
         }
 
         .timer-circle .bg-circle {
@@ -162,7 +235,8 @@
             font-size: 3.52em; /* +10% */
             font-weight: 700;
             color: #fff;
-            text-shadow: 0 0 16.5px rgba(255,255,255,0.3);
+            text-shadow: 0 0 20px rgba(255,255,255,0.4);
+            letter-spacing: 2px;
         }
 
         .small-timer-container .timer-circle {
@@ -238,52 +312,74 @@
         }
 
         body.paused .timer-circle {
-            opacity: 0.5;
+            opacity: 0.7;
+            box-shadow: 0 0 40px rgba(79, 195, 247, 0.4);
         }
 
         .timer-circle::after {
             content: '⏸';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3em;
-            color: rgba(255, 255, 255, 0.8);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: rgba(255, 255, 255, 0.9);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
             pointer-events: none;
-            z-index: 2;
+            z-index: 10;
+            /* Optical centering adjustment for emoji */
+            padding-bottom: 5px;
+            box-sizing: border-box;
         }
 
         body.paused .timer-circle::after {
             content: '▶';
         }
 
-        body.timer-running .timer-circle:hover::after {
+        body.timer-running .timer-circle:hover::after,
+        body.paused .timer-circle::after {
             opacity: 1;
         }
 
-        body.timer-running .timer-circle:hover .timer {
+        body.timer-running .timer-circle:hover .timer,
+        body.paused .timer-circle .timer {
             opacity: 0.2;
         }
 
         #suspend-btn {
             position: fixed;
-            bottom: 50px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            background: linear-gradient(135deg, #ff5252, #ff1744);
-            box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
-            transition: all 0.3s ease;
+            background: rgba(255, 23, 68, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 23, 68, 0.2);
+            color: rgba(255, 82, 82, 0.6);
+            font-size: 1em;
+            padding: 10px 25px;
+            transition: all 0.5s ease;
+            margin: 0;
+            box-shadow: none;
+            opacity: 0.3;
+        }
+
+        #suspend-btn:hover, body.paused #suspend-btn {
+            background: rgba(255, 23, 68, 0.25);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(255, 23, 68, 0.4);
+            transform: translateX(-50%) translateY(-2px);
+            opacity: 1;
+            border-color: rgba(255, 23, 68, 0.5);
         }
 
         body.timer-running #suspend-btn {
             display: inline-flex !important;
-        }
-
-        #suspend-btn:hover {
-            box-shadow: 0 0 30px rgba(255, 23, 68, 0.6);
         }
     </style>
 </head>
@@ -348,6 +444,7 @@
                         </svg>
                         <div id="dublet-timer1" class="timer">30</div>
                     </div>
+                    <button class="play-btn hidden" id="dublet-play" onclick="continueDublet()">▶</button>
                 </div>
                 <div class="timer-container hidden" id="dublet-timer2-container">
                     <div class="timer-circle" id="dublet-circle2">
@@ -368,7 +465,6 @@
                     <div id="dublet-small-timer" class="timer">10</div>
                 </div>
             </div>
-            <button class="button play-btn hidden" id="dublet-play" onclick="continueDublet()">▶</button>
         </div>
         
         <!-- Blits Mode -->
@@ -382,6 +478,7 @@
                         </svg>
                         <div id="blits-timer1" class="timer">20</div>
                     </div>
+                    <button class="play-btn hidden" id="blits-play1" onclick="continueBlits(1)">▶</button>
                 </div>
                 <div class="timer-container hidden" id="blits-timer2-container">
                     <div class="timer-circle" id="blits-circle2">
@@ -391,6 +488,7 @@
                         </svg>
                         <div id="blits-timer2" class="timer">20</div>
                     </div>
+                    <button class="play-btn hidden" id="blits-play2" onclick="continueBlits(2)">▶</button>
                 </div>
                 <div class="timer-container hidden" id="blits-timer3-container">
                     <div class="timer-circle" id="blits-circle3">
@@ -411,8 +509,6 @@
                     <div id="blits-small-timer" class="timer">10</div>
                 </div>
             </div>
-            <button class="button play-btn hidden" id="blits-play1" onclick="continueBlits(1)">▶</button>
-            <button class="button play-btn hidden" id="blits-play2" onclick="continueBlits(2)">▶</button>
         </div>
     </div>
     <div class="reference">
@@ -553,14 +649,19 @@
             document.getElementById('dublet-mode').classList.add('hidden');
             document.getElementById('blits-mode').classList.add('hidden');
 
-            ['main', 'dublet-timer1', 'dublet-timer2', 'blits-timer1', 'blits-timer2', 'blits-timer3'].forEach(id => {
+            ['main-timer', 'dublet-timer1', 'dublet-timer2', 'blits-timer1', 'blits-timer2', 'blits-timer3'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.textContent = id.includes('dublet') ? '30' : id.includes('blits') ? '20' : '60';
+                if (el) {
+                    el.classList.remove('hidden');
+                    el.textContent = id.includes('dublet') ? '30' : id.includes('blits') ? '20' : '60';
+                }
             });
             document.querySelectorAll('.progress').forEach(p => p.style.strokeDashoffset = p.parentNode.parentNode.id.includes('small') ? '276.32' : '552.64');
-            document.querySelectorAll('.small-timer-container, .timer-container').forEach(c => c.classList.remove('hidden'));
+            document.querySelectorAll('.small-timer-container, .timer-container').forEach(c => {
+                c.classList.remove('hidden');
+                c.classList.remove('fade-out');
+            });
             document.querySelectorAll('.play-btn').forEach(b => b.classList.add('hidden'));
-            document.querySelectorAll('.fade-out').forEach(el => el.classList.remove('fade-out'));
         }
 
         // Modes
@@ -570,10 +671,15 @@
             document.getElementById('small-timer-container').classList.add('hidden');
 
             startCountdown('main-timer', 'main-circle', 60, () => {
-                document.getElementById('small-timer-container').classList.remove('hidden');
-                startCountdown('small-timer', 'small-circle', 10, () => {
-                    setTimeout(resetPage, 1200);
-                }, true);
+                const mainCont = document.querySelector('#start-mode > .timer-container:not(.small-timer-container)');
+                mainCont.classList.add('fade-out');
+                setTimeout(() => {
+                    mainCont.classList.add('hidden');
+                    document.getElementById('small-timer-container').classList.remove('hidden');
+                    startCountdown('small-timer', 'small-circle', 10, () => {
+                        setTimeout(resetPage, 1200);
+                    }, true);
+                }, 600);
             });
         }
 
@@ -581,15 +687,22 @@
             document.getElementById('dublet-play').classList.add('hidden');
             const prev = document.getElementById('dublet-timer1-container');
             prev.classList.add('fade-out');
-            setTimeout(() => prev.classList.add('hidden'), 600);
 
-            document.getElementById('dublet-timer2-container').classList.remove('hidden');
-            startCountdown('dublet-timer2', 'dublet-circle2', 30, () => {
-                document.getElementById('dublet-small-container').classList.remove('hidden');
-                startCountdown('dublet-small-timer', 'dublet-small-circle', 10, () => {
-                    setTimeout(resetPage, 1200);
-                }, true);
-            });
+            setTimeout(() => {
+                prev.classList.add('hidden');
+                document.getElementById('dublet-timer2-container').classList.remove('hidden');
+                startCountdown('dublet-timer2', 'dublet-circle2', 30, () => {
+                    const cont2 = document.getElementById('dublet-timer2-container');
+                    cont2.classList.add('fade-out');
+                    setTimeout(() => {
+                        cont2.classList.add('hidden');
+                        document.getElementById('dublet-small-container').classList.remove('hidden');
+                        startCountdown('dublet-small-timer', 'dublet-small-circle', 10, () => {
+                            setTimeout(resetPage, 1200);
+                        }, true);
+                    }, 600);
+                });
+            }, 600);
         }
 
         function dubletMode() {
@@ -600,6 +713,7 @@
             document.getElementById('dublet-play').classList.add('hidden');
 
             startCountdown('dublet-timer1', 'dublet-circle1', 30, () => {
+                document.getElementById('dublet-timer1').classList.add('hidden');
                 document.getElementById('dublet-play').classList.remove('hidden');
             });
         }
@@ -609,26 +723,34 @@
             document.getElementById(`blits-play${step}`).classList.add('hidden');
             const prevId = step === 1 ? 'blits-timer1-container' : 'blits-timer2-container';
             document.getElementById(prevId).classList.add('fade-out');
-            setTimeout(() => document.getElementById(prevId).classList.add('hidden'), 600);
 
-            const nextTimer = step === 1 ? 2 : 3;
-            document.getElementById(`blits-timer${nextTimer}-container`).classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById(prevId).classList.add('hidden');
+                const nextTimer = step === 1 ? 2 : 3;
+                document.getElementById(`blits-timer${nextTimer}-container`).classList.remove('hidden');
 
-            if (step === 2) {
-                startCountdown('blits-timer3', 'blits-circle3', 20, () => {
-                    document.getElementById('blits-small-container').classList.remove('hidden');
-                    startCountdown('blits-small-timer', 'blits-small-circle', 10, () => {
+                if (step === 2) {
+                    startCountdown('blits-timer3', 'blits-circle3', 20, () => {
+                        const cont3 = document.getElementById('blits-timer3-container');
+                        cont3.classList.add('fade-out');
                         setTimeout(() => {
-                            resetPage();
-                            blitsStep = 0;
-                        }, 1200);
-                    }, true);
-                });
-            } else {
-                startCountdown('blits-timer2', 'blits-circle2', 20, () => {
-                    document.getElementById('blits-play2').classList.remove('hidden');
-                });
-            }
+                            cont3.classList.add('hidden');
+                            document.getElementById('blits-small-container').classList.remove('hidden');
+                            startCountdown('blits-small-timer', 'blits-small-circle', 10, () => {
+                                setTimeout(() => {
+                                    resetPage();
+                                    blitsStep = 0;
+                                }, 1200);
+                            }, true);
+                        }, 600);
+                    });
+                } else {
+                    startCountdown('blits-timer2', 'blits-circle2', 20, () => {
+                        document.getElementById('blits-timer2').classList.add('hidden');
+                        document.getElementById('blits-play2').classList.remove('hidden');
+                    });
+                }
+            }, 600);
         }
 
         function blitsMode() {
@@ -642,6 +764,7 @@
             document.getElementById('blits-play2').classList.add('hidden');
 
             startCountdown('blits-timer1', 'blits-circle1', 20, () => {
+                document.getElementById('blits-timer1').classList.add('hidden');
                 document.getElementById('blits-play1').classList.remove('hidden');
             });
         }
